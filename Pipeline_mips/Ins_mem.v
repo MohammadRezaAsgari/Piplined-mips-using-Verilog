@@ -1,0 +1,29 @@
+`timescale 1ns / 1ps
+module Ins_mem(input [31:0] a,	output [31:0] rd);
+	reg [31:0] RAM[127:0];
+	assign rd = RAM[a];
+
+	
+	
+	initial RAM[0]=32'b00100000000000100000000000000101;	//addi $v0, $zero, 0x0005		#$v0=0x5
+	initial RAM[4]=32'b00100000000000110000000000001100;	//addi $v1, $zero, 0x000C		#$v1=0xc
+	initial RAM[8]=32'b00100000011001111111111111110111;	//addi $a3, $v1, 0xFFF7			#$a3=0x10003
+	initial RAM[12]=32'b00000000111000100010000000100101;	//or   $a0, $a3, $v0				#$a0=0x10007
+	initial RAM[16]=32'b00000000011001000010100000100100;	//and $a1, $v1, $a0				#$a1=0x4
+	initial RAM[20]=32'b00000000101001000010100000100000;	//add $a1, $a1, $a0				#$a1=0x1000B
+	initial RAM[24]=32'b00010000101001110000000000001010;	//beq $a1, $a3, 0x000A			#$a1=0x1000B != $a3=0x10003 => not taken
+	initial RAM[28]=32'b00000000011001000010000000101010;	//slt $a0, $v1, $a0				#$a0=1
+	initial RAM[32]=32'b00010000100000000000000000000001;	//beq $a0, $zero, 0x0001		#not taken
+	initial RAM[36]=32'b00100000000001010000000000000000;	//addi $a1, $zero, 0x0000		#$a1=0x0
+	initial RAM[40]=32'b00000000111000100010000000101010;	//slt $a0, $a3, $v0				#$a0=0
+	initial RAM[44]=32'b00000000100001010011100000100000;	//add $a3, $a0, $a1				#$a3=0x0
+	initial RAM[48]=32'b00000000111000100011100000100010;	//sub $a3, $a3, $v0				#$a3=0xFFFFFFFB
+	initial RAM[52]=32'b10101100011001110000000001000100;	//sw $a3, 0x0044, $v1			#mem[80]=0xFFFFFFFB
+	initial RAM[56]=32'b10001100000000100000000001010000;	//lw $v0, 0x0050, $zero			#$v0=mem[80]=0xFFFFFFFB
+	initial RAM[60]=32'b00001000000000000000000000010001;	//j 0x0011							#JUMP 68
+	initial RAM[64]=32'b00100000000000100000000000000001;	//addi $v0, $zero, 0x0001		#doesnt run
+	initial RAM[68]=32'b10001100000010010000000001010000;	//lw $t1, 0x0050, $zero			#$t1=mem[80]=0xFFFFFFFB
+	initial RAM[72]=32'b10101100000010010000000001011000;	//sw $t1, 0x0058, $zero			#mem[88]=$t1=0xFFFFFFFB
+	initial RAM[76]=32'b10101100000000100000000001010100;	//sw $v0, 0x0054, $zero			#mem[84]=$v0=0xFFFFFFFB
+	
+endmodule 
